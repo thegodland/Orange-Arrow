@@ -11,8 +11,15 @@ import Foundation
 class Words {
     let title : String = "Words"
     let rule : String = "This is static rule of words"
-    let answer : [String] = ["SURVIVOR","GENTLE","CHALLENGE"]
-    let hint : [String] = ["game of show","how to treat others","something to improve yourself"]
+    let answer : [[String]] = [["SURVIVOR","GENTLE","CHALLENGE"],["SURVIVOR","GENTLE","CHALLENGE"],["SURVIVOR","GENTLE","CHALLENGE"],["SURVIVOR","GENTLE","CHALLENGE"],["SURVIVOR","GENTLE","CHALLENGE"],["SURVIVOR","GENTLE","CHALLENGE"],["SURVIVOR","GENTLE","CHALLENGE"],["SURVIVOR","GENTLE","CHALLENGE"]]
+    let hint : [[String]] = [["game of show","how to treat others","something to improve yourself"],
+                             ["game of show","how to treat others","something to improve yourself"],
+                             ["game of show","how to treat others","something to improve yourself"],
+                             ["game of show","how to treat others","something to improve yourself"],
+                             ["game of show","how to treat others","something to improve yourself"],
+                             ["game of show","how to treat others","something to improve yourself"],
+                             ["game of show","how to treat others","something to improve yourself"],
+                             ["game of show","how to treat others","something to improve yourself"]]
     
     
 }

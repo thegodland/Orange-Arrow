@@ -11,10 +11,28 @@ import Foundation
 class Puzzle {
     let title : String = "Puzzle"
     let rule : String = "This is static rule of puzzle"
-    let imageName : [String] = ["james","yao","messi"]
-    let hint : [String] = ["NBA","Greatwall","soccer"]
-    let choice : [[String]] = [["James","Harden","Curry"],["YiJianLian","Curry","Yao"],["Roddick","Messi","Beckham"]]
-    let answer : [Int] = [0,2,1]
+    let imageName : [[String]] = [["james","yao","messi"],["james","yao","messi"],["james","yao","messi"],["james","yao","messi"],["james","yao","messi"],["james","yao","messi"],["james","yao","messi"],["james","yao","messi"],["james","yao","messi"],["james","yao","messi"]]
+    let hint : [[String]] = [["NBA","Greatwall","soccer"],
+                             ["NBA","Greatwall","soccer"],
+                             ["NBA","Greatwall","soccer"],
+                             ["NBA","Greatwall","soccer"],
+                             ["NBA","Greatwall","soccer"],
+                             ["NBA","Greatwall","soccer"],
+                             ["NBA","Greatwall","soccer"],
+                             ["NBA","Greatwall","soccer"],
+                             ["NBA","Greatwall","soccer"],
+                             ["NBA","Greatwall","soccer"]]
+    let choice : [[[String]]] = [[["James","Harden","Curry",""],["YiJianLian","Curry","Yao",""],["Roddick","Messi","Beckham",""]],
+                                [["James","Harden","Curry"],["YiJianLian","Curry","Yao"],["Roddick","Messi","Beckham"]],
+                                [["James","Harden","Curry"],["YiJianLian","Curry","Yao"],["Roddick","Messi","Beckham"]],
+                                [["James","Harden","Curry"],["YiJianLian","Curry","Yao"],["Roddick","Messi","Beckham"]],
+                                [["James","Harden","Curry"],["YiJianLian","Curry","Yao"],["Roddick","Messi","Beckham"]],
+                                [["James","Harden","Curry"],["YiJianLian","Curry","Yao"],["Roddick","Messi","Beckham"]],
+                                [["James","Harden","Curry"],["YiJianLian","Curry","Yao"],["Roddick","Messi","Beckham"]],
+                                [["James","Harden","Curry"],["YiJianLian","Curry","Yao"],["Roddick","Messi","Beckham"]],
+                                [["James","Harden","Curry"],["YiJianLian","Curry","Yao"],["Roddick","Messi","Beckham"]],
+                                [["James","Harden","Curry"],["YiJianLian","Curry","Yao"],["Roddick","Messi","Beckham"]]]
+    let answer : [[Int]] = [[0,2,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]]
     
     
 }

@@ -10,16 +10,25 @@ import UIKit
 
 class WordsVC : UIViewController, UITextFieldDelegate {
     
-    
-    @IBOutlet weak var gameTitle: UILabel!
+
     @IBOutlet weak var middleArea: UIView!
-    @IBOutlet weak var wordsSet: UILabel!
+  
+    @IBOutlet weak var toTypeArea: UIView!
     @IBOutlet weak var hintContent: UILabel!
     @IBOutlet weak var timeLeftLabel: UILabel!
+    @IBOutlet weak var progressBar: UIView!
     @IBOutlet weak var timerForGame: UILabel!
     @IBOutlet weak var answerArea: UITextField!
+    @IBOutlet weak var progressLabel: UILabel!
+    @IBOutlet weak var gradeTracker: UILabel!
+    
+    @IBOutlet var wordImage: [UIImageView]!
+    
+    @IBOutlet var wordLabel: [UILabel]!
     
     @IBOutlet weak var heightConstraint: NSLayoutConstraint!
+    
+    let wordFrameName = ["football.png","tennis.png","basketball.png","volleyball.png","soccer.png"]
     let questionAll = Words()
     var currentQuestion : Int = 0
     var passedTitle : String = ""
@@ -28,6 +37,9 @@ class WordsVC : UIViewController, UITextFieldDelegate {
     var totalTime = 0
     var questionTime = 0
     var grade = 0
+    var level = 0
+    let methods = Methods()
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +49,7 @@ class WordsVC : UIViewController, UITextFieldDelegate {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
         middleArea.addGestureRecognizer(tapGesture)
         
-        gameTitle.text = passedTitle
+//        gameTitle.text = passedTitle
         updateUI()
         startTimer()
         startTimeConstraint()
@@ -52,20 +64,43 @@ class WordsVC : UIViewController, UITextFieldDelegate {
     func updateUI(){
         
         answerArea.text = ""
-        var setToShow = Array(questionAll.answer[currentQuestion])
+        var setToShow = Array(questionAll.answer[level-1][currentQuestion])
 //        setToShow.sort(){_, _ in arc4random() % 2 == 0}
 
         //to check the shuffled is same as before
-        while String(setToShow) == questionAll.answer[currentQuestion]{
+        while String(setToShow) == questionAll.answer[level-1][currentQuestion]{
             setToShow.sort(){_, _ in arc4random() % 2 == 0}
         }
         
-        var stringToShow = ""
-        for letter in setToShow{
-            stringToShow += "\(letter) 🍊 "
+//        var stringToShow = ""
+//        for letter in setToShow{
+//            stringToShow += "\(letter) 🍊 "
+//        }
+        
+        //to update on the interface
+        for (index,letter) in setToShow.enumerated() {
+            wordLabel[index].text = String(letter)
+            wordImage[index].image = UIImage(named: wordFrameName[index%5])
+
         }
-        wordsSet.text = stringToShow
-        hintContent.text = questionAll.hint[currentQuestion]
+        for index in setToShow.count...wordLabel.count-1 {
+            wordLabel[index].text = nil
+            wordImage[index].image = UIImage(named: "")
+        }
+            
+//        wordsSet.text = stringToShow
+        hintContent.text = questionAll.hint[level-1][currentQuestion]
+        
+        //update progress bar
+        progressBar.frame.size.width = (view.frame.size.width / CGFloat(questionAll.answer[level-1].count)) * CGFloat(currentQuestion + 1)
+        
+        // upodate progress label
+        progressLabel.text = "\(currentQuestion + 1) / \(questionAll.answer[level-1].count)"
+        
+        // update grade label
+        gradeTracker.text = "current points is \(grade)/\(questionAll.answer[level-1].count)"
+        
+        
         
     }
     
@@ -76,25 +111,24 @@ class WordsVC : UIViewController, UITextFieldDelegate {
     
     @IBAction func confirmClick(_ sender: UIButton) {
         //user click confirm to check if it is the end of game
-        //end of game then alert
-        if currentQuestion >= questionAll.answer.count-1 {
+        //end of game then alert        
+
+        if currentQuestion >= questionAll.answer[level-1].count - 1{
             answerArea.endEditing(true)
             calculate()
             endTimer()
-            let currentTime = timerForGame.text!
-            let message = "You finished all questions with points \(grade) in \(currentTime). Do you want to play again?"
-            let alert = UIAlertController(title: "Congrats", message: message, preferredStyle: .alert)
-            let restartAction = UIAlertAction(title: "Restart", style: .default, handler: { (UIAlertAction) in self.startOver()})
-            let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: { (UIAlertAction) in self.cancel()})
-            alert.addAction(cancelAction)
-            alert.addAction(restartAction)
+
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.1) {
-                
-                self.present(alert, animated: true, completion: nil)
-                
+            methods.accuracy = Float(grade)/Float(questionAll.answer[level-1].count)*100*100
+            methods.gameTime = timerForGame.text!
+            methods.gameType = passedTitle
+            methods.level = level
+            
+            
+            methods.checkGradeAndPopAlert(gameToUnlock:2,targetVC:self,targetNVMother:navigationController!){
+                self.startOver()
             }
-            
+        
         }else{
             // not end of game then check textfield is same as answer then update question hint clear textfield change current number
             answerArea.endEditing(true)
@@ -146,11 +180,31 @@ class WordsVC : UIViewController, UITextFieldDelegate {
     }
     
     @objc func nextQuestion(){
-        //force to next question
-        questionTime = 0
-        calculate()
-        currentQuestion += 1
-        updateUI()
+        // before goto next question by force timing, check if the current question is last one
+        if currentQuestion >= questionAll.answer[level-1].count - 1 {
+            answerArea.endEditing(true)
+            calculate()
+            endTimer()
+            
+            
+            methods.accuracy = Float(grade)/Float(questionAll.answer[level-1].count)*100*100
+            methods.gameTime = timerForGame.text!
+            methods.gameType = passedTitle
+            methods.level = level
+            
+            
+            methods.checkGradeAndPopAlert(gameToUnlock:2,targetVC:self,targetNVMother:navigationController!){
+                self.startOver()
+            }
+        }else{
+            //force to next question
+            questionTime = 0
+            calculate()
+            currentQuestion += 1
+            updateUI()
+        }
+        
+
     }
     
     func endTimeConstraint(){
@@ -173,7 +227,7 @@ class WordsVC : UIViewController, UITextFieldDelegate {
     
     //to calculate right or wrong
     func calculate(){
-        if answerArea.text?.uppercased() == questionAll.answer[currentQuestion]{
+        if answerArea.text?.uppercased() == questionAll.answer[level-1][currentQuestion]{
             grade += 1
         }
     }
